@@ -1,0 +1,91 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// Anggap Class Course yang sebelumnya sudah didefinisikan di sini
+// Class Course (dengan encapsulation)
+class Course {
+    private String courseName;
+    private int credit;
+    private String instructorName;
+
+    public Course(String name, int credits, String instructor) {
+        this.courseName = name;
+        setCredit(credits); // Menggunakan setter untuk validasi
+        this.instructorName = instructor;
+    }
+
+    public int getCredit() { return credit; }
+
+    // Setter dengan validasi
+    public void setCredit(int credit) {
+        if (credit >= 0) {
+            this.credit = credit;
+        } else {
+            System.err.println("Nilai SKS tidak boleh negatif.");
+        }
+    }
+
+    // Getter untuk courseName
+    public String getCourseName() { return courseName; }
+}
+
+public class Student {
+    // Atribut Dasar
+    private String name;
+    private String studentId;
+
+    // Atribut untuk Agregasi: Daftar/List dari objek Course
+    // Student memiliki (has-a) Course. Course bisa ada tanpa Student.
+    private List<Course> courses;
+
+    // Constructor
+    public Student(String name, String studentId) {
+        this.name = name;
+        this.studentId = studentId;
+        // Inisialisasi list kursus saat objek Student dibuat
+        this.courses = new ArrayList<>();
+    }
+
+    // Method untuk Menambah Course (Agregasi)
+    public void addCourse(Course course) {
+        this.courses.add(course);
+        System.out.println(this.name + " berhasil mengambil mata kuliah: " + course.getCourseName());
+    }
+
+    // Method untuk Menampilkan Informasi Mahasiswa dan Kursus
+    public void displayStudentInfo() {
+        System.out.println("\n======================================");
+        System.out.println("Nama Mahasiswa: " + name);
+        System.out.println("NIM           : " + studentId);
+
+        System.out.println("\n--- Daftar Mata Kuliah yang Diambil (" + courses.size() + " MK) ---");
+        int totalSKS = 0;
+        if (courses.isEmpty()) {
+            System.out.println("Belum mengambil mata kuliah.");
+        } else {
+            for (Course course : courses) {
+                System.out.println("- " + course.getCourseName() + " (" + course.getCredit() + " SKS)");
+                totalSKS += course.getCredit();
+            }
+        }
+        System.out.println("Total SKS yang Diambil: " + totalSKS);
+        System.out.println("======================================");
+    }
+
+    // Metode main untuk pengujian
+    public static void main(String[] args) {
+        // 1. Buat Objek Course secara terpisah
+        Course rpl = new Course("Rekayasa Perangkat Lunak", 3, "Bapak Anton");
+        Course pbo = new Course("Pemrograman Berorientasi Objek", 4, "Ibu Budi");
+
+        // 2. Buat Objek Student
+        Student budi = new Student("Budi Darmawan", "20231001");
+
+        // 3. Implementasi Agregasi: Student mengambil Course yang sudah ada
+        budi.addCourse(rpl);
+        budi.addCourse(pbo);
+
+        // 4. Tampilkan Info
+        budi.displayStudentInfo();
+    }
+}
